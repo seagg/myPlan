@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/pre-dexed/debug/classes-078c11729a799100e0be93564015588ff0415879.jar" />
+    </item>
+    <item
+        jar="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/pre-dexed/debug/classes-d3c30b437e26a90499d9191dbf90d28e4ddf84b0.jar" />
+    </item>
+    <item
+        jar="/home/zhaoxuhai/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="4b74cefe1f0c1b819e7260c8627a14674e37fd35">
+        <dex dex="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-f9679b904e463e010b27fd8b451ab75326e45051.jar" />
+    </item>
+    <item
+        jar="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-8e941b3ff5069b3a784ed28916f2e3b41aed3be7.jar" />
+    </item>
+
+</items>
