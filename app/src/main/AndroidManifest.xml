@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".AddCountActivity"
+            android:label="@string/title_activity_add_count" >
+        </activity>
     </application>
 
 </manifest>

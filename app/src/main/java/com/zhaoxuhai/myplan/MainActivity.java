@@ -2,26 +2,25 @@ package com.zhaoxuhai.myplan;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +51,8 @@ public class MainActivity extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
-        createBtn = (Button)findViewById(R.id.create_btn);
-        modifyBtn = (Button)findViewById(R.id.modify_btn);
+        createBtn = (Button) findViewById(R.id.create_btn);
+        modifyBtn = (Button) findViewById(R.id.modify_btn);
 
         dbHelper = new MyDatabaseHelper(this, "MyPlan.db", null, 1);
         createBtn.setOnClickListener(this);
@@ -61,6 +60,13 @@ public class MainActivity extends Activity implements OnClickListener {
 
         horizontalScrollView = (HorizontalScrollView) findViewById(R.id.scrollView);
         gridView = (GridView) findViewById(R.id.gridView1);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, AddCountActivity.class);
+                startActivity(intent);
+            }
+        });
 
         horizontalScrollView.setHorizontalScrollBarEnabled(false);
         getScreenDen();
@@ -70,6 +76,7 @@ public class MainActivity extends Activity implements OnClickListener {
     public void getData() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from Plan", null);
+        planList.clear();
         while (cursor.moveToNext()) {
             int planId = cursor.getInt(cursor.getColumnIndex("planName"));
             String planName = cursor.getString(cursor.getColumnIndex("planName"));
@@ -84,17 +91,16 @@ public class MainActivity extends Activity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.create_btn:
                 myDialog = new AlertDialog.Builder(MainActivity.this).create();
                 myDialog.show();
                 myDialog.getWindow().setContentView(R.layout.create_planitem_dialog);
                 myDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-                planNameTxt = (EditText)myDialog.getWindow().findViewById(R.id.planName);
-                planUnitTxt = (EditText)myDialog.getWindow().findViewById(R.id.planUnit);
-                saveBtn = (Button)myDialog.getWindow().findViewById(R.id.save_btn);
-                delBtn = (Button)myDialog.getWindow().findViewById(R.id.delete_btn);
-
+                planNameTxt = (EditText) myDialog.getWindow().findViewById(R.id.planName);
+                planUnitTxt = (EditText) myDialog.getWindow().findViewById(R.id.planUnit);
+                saveBtn = (Button) myDialog.getWindow().findViewById(R.id.save_btn);
+                delBtn = (Button) myDialog.getWindow().findViewById(R.id.delete_btn);
                 saveBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -102,14 +108,17 @@ public class MainActivity extends Activity implements OnClickListener {
                         planName = planNameTxt.getText().toString();
                         planUnit = planUnitTxt.getText().toString();
                         SQLiteDatabase db = dbHelper.getWritableDatabase();
-                        if(planName.length()>0 && planUnit.length()>0) {
+                        if (planName.length() > 0 && planUnit.length() > 0) {
                             db.execSQL("insert into Plan(planName, iconImg, iconColor, planUnit) values(?,?,?,?)",
-                                    new String[] {planName, "", "", planUnit});
+                                    new String[]{planName, "", "", planUnit});
                         }
-                        getData();
-                        Log.d("planName", planName);
-                        Log.d("planUnit", planUnit);
-                        Log.d("create_db", "ok");
+                        Toast.makeText(MainActivity.this, "创建项目 " + planName + " 成功", Toast.LENGTH_SHORT).show();
+                        setValue();
+                        myDialog.dismiss();
+//                        getData();
+//                        Log.d("planName", planName);
+//                        Log.d("planUnit", planUnit);
+//                        Log.d("create_db", "ok");
                     }
                 });
                 myDialog.getWindow()
@@ -131,13 +140,14 @@ public class MainActivity extends Activity implements OnClickListener {
 
 
     private void setValue() {
-        MyGridViewAdapter adapter = new MyGridViewAdapter(this, 5);
+        getData();
+        MyGridViewAdapter adapter = new MyGridViewAdapter(this, planList);
         gridView.setAdapter(adapter);
         int count = adapter.getCount();
         int columnsNum = (count % 2 == 0) ? count / 2 : count / 2 + 1;
         int columnWidth = dm.widthPixels / NUM;
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(columnsNum * columnWidth+100,
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(columnsNum * columnWidth + 100,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         gridView.setLayoutParams(params);
         gridView.setColumnWidth(columnWidth);
@@ -145,6 +155,7 @@ public class MainActivity extends Activity implements OnClickListener {
         gridView.setVerticalSpacing(dm.heightPixels / 2 / NUM);
         gridView.setStretchMode(GridView.NO_STRETCH);
         gridView.setNumColumns(columnsNum);
+
     }
 
     private void getScreenDen() {

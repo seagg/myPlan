@@ -8,14 +8,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class MyGridViewAdapter extends BaseAdapter {
 	int count;
 	Context context;
+    List<Plan> planList;
 
-	public MyGridViewAdapter(Context context, int count) {
+	public MyGridViewAdapter(Context context, List<Plan> planList) {
 		// TODO Auto-generated constructor stub
 		this.context = context;
-		this.count = count;
+		this.count = planList.size();
+        this.planList = planList;
 	}
 
 	@Override
@@ -49,7 +53,8 @@ public class MyGridViewAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-        String project_name = position==0?"俯卧撑":(position==1?"仰卧起坐":(position==2?"跑步":position==3?"饮水":"其他"));
+
+        String project_name = planList.get(position).getPlanName();//position==0?"俯卧撑":(position==1?"仰卧起坐":(position==2?"跑步":position==3?"饮水":"其他"));
 		holder.tv.setText(project_name + " ");
 		return convertView;
 	}
