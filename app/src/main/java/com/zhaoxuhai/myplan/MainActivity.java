@@ -41,6 +41,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private int NUM = 2;
     private int hSpacing = 20;
     private int vSpacing = 50;
+    private int version = 1;
     private AlertDialog myDialog = null;
     private MyDatabaseHelper dbHelper;
     private List<Plan> planList = new ArrayList<>();
@@ -54,7 +55,7 @@ public class MainActivity extends Activity implements OnClickListener {
         createBtn = (Button) findViewById(R.id.create_btn);
         modifyBtn = (Button) findViewById(R.id.modify_btn);
 
-        dbHelper = new MyDatabaseHelper(this, "MyPlan.db", null, 1);
+        dbHelper = new MyDatabaseHelper(this, "MyPlan.db", null, version);
         createBtn.setOnClickListener(this);
         modifyBtn.setOnClickListener(this);
 
@@ -63,8 +64,8 @@ public class MainActivity extends Activity implements OnClickListener {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, AddCountActivity.class);
-                startActivity(intent);
+                Plan plan = planList.get(position);
+                AddCountActivity.actionStart(MainActivity.this, plan.getPlanId(), plan.getPlanName(), plan.getPlanUnit());
             }
         });
 
@@ -78,15 +79,15 @@ public class MainActivity extends Activity implements OnClickListener {
         Cursor cursor = db.rawQuery("select * from Plan", null);
         planList.clear();
         while (cursor.moveToNext()) {
-            int planId = cursor.getInt(cursor.getColumnIndex("planName"));
+            int planId = cursor.getInt(cursor.getColumnIndex("planId"));
             String planName = cursor.getString(cursor.getColumnIndex("planName"));
             String planUnit = cursor.getString(cursor.getColumnIndex("planUnit"));
             String iconImg = cursor.getString(cursor.getColumnIndex("iconImg"));
             String iconColor = cursor.getString(cursor.getColumnIndex("iconColor"));
             Plan plan = new Plan(planId, planName, planUnit, iconImg, iconColor);
             planList.add(plan);
-            //Log.d("dbrows",planId+ " "+ planName+" "+ planUnit+" "+ iconImg+" "+ iconColor);
         }
+        cursor.close();
     }
 
     @Override
@@ -115,10 +116,6 @@ public class MainActivity extends Activity implements OnClickListener {
                         Toast.makeText(MainActivity.this, "创建项目 " + planName + " 成功", Toast.LENGTH_SHORT).show();
                         setValue();
                         myDialog.dismiss();
-//                        getData();
-//                        Log.d("planName", planName);
-//                        Log.d("planUnit", planUnit);
-//                        Log.d("create_db", "ok");
                     }
                 });
                 myDialog.getWindow()

@@ -16,6 +16,13 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             + "iconImg text, "
             + "iconColor text, "
             + "planUnit text)";
+    public static final String createRecordTbl = "create table Record ("
+            + " recordId integer primary key autoincrement, "
+            + " num integer, "
+            + " planId integer, "
+            + " year integer, "
+            + " month integer, "
+            + " day integer)";
 
     private Context mContext;
 
@@ -27,6 +34,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(createPlanTbl);
+        db.execSQL(createRecordTbl);
     }
 
     @Override

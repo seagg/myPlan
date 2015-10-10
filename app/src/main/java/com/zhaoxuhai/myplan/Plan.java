@@ -11,6 +11,7 @@ public class Plan {
     private String iconColor;
 
     public Plan(int planId, String planName, String planUnit, String iconImg, String iconColor) {
+        this.planId = planId;
         this.planName = planName;
         this.planUnit = planUnit;
         this.iconImg = iconImg;
