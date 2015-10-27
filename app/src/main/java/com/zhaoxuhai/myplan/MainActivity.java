@@ -31,7 +31,7 @@ public class MainActivity extends Activity implements OnClickListener {
     GridView gridView;
     DisplayMetrics dm;
     private Button createBtn = null;
-    private Button modifyBtn = null;
+    //private Button modifyBtn = null;
     private EditText planNameTxt = null;
     private EditText planUnitTxt = null;
     private Button saveBtn = null;
@@ -39,9 +39,9 @@ public class MainActivity extends Activity implements OnClickListener {
     private String planName = "";
     private String planUnit = "";
     private int NUM = 2;
-    private int hSpacing = 20;
+    private int hSpacing = 10;
     private int vSpacing = 50;
-    private int version = 1;
+    private int version = 2;
     private AlertDialog myDialog = null;
     private MyDatabaseHelper dbHelper;
     private List<Plan> planList = new ArrayList<>();
@@ -53,11 +53,11 @@ public class MainActivity extends Activity implements OnClickListener {
         setContentView(R.layout.activity_main);
 
         createBtn = (Button) findViewById(R.id.create_btn);
-        modifyBtn = (Button) findViewById(R.id.modify_btn);
+        //modifyBtn = (Button) findViewById(R.id.modify_btn);
 
         dbHelper = new MyDatabaseHelper(this, "MyPlan.db", null, version);
         createBtn.setOnClickListener(this);
-        modifyBtn.setOnClickListener(this);
+        //modifyBtn.setOnClickListener(this);
 
         horizontalScrollView = (HorizontalScrollView) findViewById(R.id.scrollView);
         gridView = (GridView) findViewById(R.id.gridView1);
@@ -71,7 +71,22 @@ public class MainActivity extends Activity implements OnClickListener {
 
         horizontalScrollView.setHorizontalScrollBarEnabled(false);
         getScreenDen();
+        setIcons();
         setValue();
+    }
+
+    public void setIcons() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("update Plan set iconFront =? where planId=1",
+                new Object[]{"front_rope"});
+        db.execSQL("update Plan set iconFront =? where planId=2",
+                new Object[]{"front_ywqz"});
+        db.execSQL("update Plan set iconFront =? where planId=3",
+                new Object[]{"front_water"});
+        db.execSQL("update Plan set iconFront =? where planId=4",
+                new Object[]{"front_fwc"});
+        db.execSQL("update Plan set iconFront =? where planId=5",
+                new Object[]{"front_running"});
     }
 
     public void getData() {
@@ -83,8 +98,11 @@ public class MainActivity extends Activity implements OnClickListener {
             String planName = cursor.getString(cursor.getColumnIndex("planName"));
             String planUnit = cursor.getString(cursor.getColumnIndex("planUnit"));
             String iconImg = cursor.getString(cursor.getColumnIndex("iconImg"));
+            String iconFront = cursor.getString(cursor.getColumnIndex("iconFront"));
             String iconColor = cursor.getString(cursor.getColumnIndex("iconColor"));
-            Plan plan = new Plan(planId, planName, planUnit, iconImg, iconColor);
+            Plan plan = new Plan(planId, planName, planUnit, iconImg, iconFront, iconColor);
+            Log.d("plan_id",planId+"");
+            Log.d("plan_info", planId+" "+planName+" "+planUnit+" "+iconImg+" "+iconFront+" "+iconColor);
             planList.add(plan);
         }
         cursor.close();
@@ -101,7 +119,7 @@ public class MainActivity extends Activity implements OnClickListener {
                 planNameTxt = (EditText) myDialog.getWindow().findViewById(R.id.planName);
                 planUnitTxt = (EditText) myDialog.getWindow().findViewById(R.id.planUnit);
                 saveBtn = (Button) myDialog.getWindow().findViewById(R.id.save_btn);
-                delBtn = (Button) myDialog.getWindow().findViewById(R.id.delete_btn);
+                //delBtn = (Button) myDialog.getWindow().findViewById(R.id.delete_btn);
                 saveBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -127,9 +145,9 @@ public class MainActivity extends Activity implements OnClickListener {
                             }
                         });
                 break;
-            case R.id.modify_btn:
-                Log.d("modify_btn", "modify");
-                break;
+//            case R.id.modify_btn:
+//                Log.d("modify_btn", "modify");
+//                break;
             default:
                 break;
         }
@@ -148,8 +166,9 @@ public class MainActivity extends Activity implements OnClickListener {
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         gridView.setLayoutParams(params);
         gridView.setColumnWidth(columnWidth);
+
         gridView.setHorizontalSpacing(hSpacing);
-        gridView.setVerticalSpacing(dm.heightPixels / 2 / NUM);
+        gridView.setVerticalSpacing(dm.heightPixels / 4 / NUM);
         gridView.setStretchMode(GridView.NO_STRETCH);
         gridView.setNumColumns(columnsNum);
 

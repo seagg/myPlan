@@ -1,6 +1,7 @@
 package com.zhaoxuhai.myplan;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 public class MyGridViewAdapter extends BaseAdapter {
@@ -49,18 +51,38 @@ public class MyGridViewAdapter extends BaseAdapter {
 			convertView = LayoutInflater.from(context).inflate(
 					R.layout.listitem, null);
 			holder.tv = (TextView) convertView.findViewById(R.id.textView1);
+            holder.iv = (ImageView) convertView.findViewById(R.id.imageView1);
+            holder.iv2 = (ImageView) convertView.findViewById(R.id.imageView2);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-        String project_name = planList.get(position).getPlanName();//position==0?"俯卧撑":(position==1?"仰卧起坐":(position==2?"跑步":position==3?"饮水":"其他"));
+        String project_name = planList.get(position).getPlanName();
+        String project_icon = planList.get(position).getIconImg();
+        String icon_front = planList.get(position).getIconFront();
 		holder.tv.setText(project_name + " ");
-		return convertView;
+
+
+        try {
+            Field field = R.drawable.class.getField(project_icon);
+            holder.iv.setImageResource(field.getInt(new R.drawable()));
+            field = R.drawable.class.getField(icon_front);
+            holder.iv2.setImageResource(field.getInt(new R.drawable()));
+
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
+        return convertView;
 	}
 
 	class ViewHolder {
 		ImageView iv;
+        ImageView iv2;
 		TextView tv;
 	}
 

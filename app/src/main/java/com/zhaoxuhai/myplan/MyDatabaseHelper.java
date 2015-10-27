@@ -24,6 +24,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             + " month integer, "
             + " day integer)";
 
+    public static final String addIconFrontSql = "alter table Plan add column iconFront text";
+
     private Context mContext;
 
     public MyDatabaseHelper(Context context, String name, CursorFactory factory, int version) {
@@ -39,6 +41,6 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL(addIconFrontSql);
     }
 }

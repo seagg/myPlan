@@ -5,28 +5,49 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 
 public class LineActivity extends Activity implements View.OnClickListener {
 
     private int planId;
     private MyDatabaseHelper dbHelper;
-    private int version = 1;
+    private int version = 2;
     private int year;
     private int month;
     private int daysCount;
+
+    private Button backBtn = null;
+    private Button beforeBtn = null;
+    private Button afterBtn = null;
+    private TextView yearMonthShow = null;
+
+    private LineChart chart;
+    private LineData data;
+    private ArrayList<String> xVals;
+    private LineDataSet dataSet;
+    private ArrayList<Entry> yVals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +55,23 @@ public class LineActivity extends Activity implements View.OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_line);
 
+        backBtn = (Button)findViewById(R.id.back_btn);
+        beforeBtn = (Button)findViewById(R.id.before_btn);
+        afterBtn = (Button)findViewById(R.id.after_btn);
+        yearMonthShow = (TextView)findViewById(R.id.year_month_show);
+
+        backBtn.setOnClickListener(this);
+        beforeBtn.setOnClickListener(this);
+        afterBtn.setOnClickListener(this);
+
+        chart = (LineChart)findViewById(R.id.chart);
         dbHelper = new MyDatabaseHelper(this, "MyPlan.db", null, version);
         Intent intent = getIntent();
         planId = intent.getIntExtra("planId", 0);
         Calendar cal=Calendar.getInstance();
         year=cal.get(Calendar.YEAR);
         month=cal.get(Calendar.MONTH)+1;
-        //putData();
         getData();
-
     }
 
 //    public void putData() {
@@ -68,9 +97,10 @@ public class LineActivity extends Activity implements View.OnClickListener {
 //    }
 
     public Map getData() {
+        yearMonthShow.setText(year+"-"+month);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery("select day,num from Record where planId="+planId+" and year="+year+" and month="+month, null);
-        Map map = new HashMap();
+        Map<Integer, Integer> map = new HashMap<>();
         while (cursor.moveToNext()) {
             int day = cursor.getInt(cursor.getColumnIndex("day"));
             int num = cursor.getInt(cursor.getColumnIndex("num"));
@@ -79,20 +109,51 @@ public class LineActivity extends Activity implements View.OnClickListener {
         cursor.close();
         Calendar myCal = new GregorianCalendar(year, month, 1);
         daysCount = myCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        xVals=new ArrayList<>();
+        yVals=new ArrayList<>();
+
         for(int i=1;i<=daysCount;i++) {
-            if(map.containsKey(i) == false) {
-                map.put(i, 0);
+            xVals.add(i+"");
+            int y = 0;
+            if(map.containsKey(i) == true) {
+                y=map.get(i);
             }
+            yVals.add(new Entry(y,i-1));
         }
-//        for(int j=1;j<=daysCount;j++) {
-//            Log.d("num count", j+" "+map.get(j));
-//        }
+        dataSet=new LineDataSet(yVals,"个数");
+        dataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        data=new LineData(xVals,dataSet);
+        chart.setData(data);
+        chart.setDescription("数量统计");
+        chart.animateY(1000);
         return map;
     }
 
     public void onClick(View v) {
         switch (v.getId()) {
-
+            case R.id.back_btn:
+                Intent intent = new Intent(LineActivity.this, MainActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.before_btn:
+                if(month >=2) {
+                    month -= 1;
+                } else {
+                    month = 12;
+                    year -= 1;
+                }
+                getData();
+                break;
+            case R.id.after_btn:
+                if(month<=11) {
+                    month += 1;
+                } else {
+                    month = 1;
+                    year += 1;
+                }
+                getData();
+                break;
             default:
                 break;
         }

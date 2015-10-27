@@ -23,6 +23,13 @@
         <dex dex="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/pre-dexed/debug/support-annotations-21.0.3-f9679b904e463e010b27fd8b451ab75326e45051.jar" />
     </item>
     <item
+        jar="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/libs/mpandroidchartlibrary-2-1-4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="952d6628da280edb2bbb66a0848f8d79d3587df5">
+        <dex dex="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/pre-dexed/debug/mpandroidchartlibrary-2-1-4-97dec363bad2c384703a3b69e58b7b75b30c8f71.jar" />
+    </item>
+    <item
         jar="/home/zhaoxuhai/AndroidStudioProjects/MyPlan/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/libs/internal_impl-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"

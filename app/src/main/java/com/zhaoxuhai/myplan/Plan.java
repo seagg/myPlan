@@ -9,12 +9,14 @@ public class Plan {
     private String planUnit;
     private String iconImg;
     private String iconColor;
+    private String iconFront;
 
-    public Plan(int planId, String planName, String planUnit, String iconImg, String iconColor) {
+    public Plan(int planId, String planName, String planUnit, String iconImg, String iconFront, String iconColor) {
         this.planId = planId;
         this.planName = planName;
         this.planUnit = planUnit;
         this.iconImg = iconImg;
+        this.iconFront = iconFront;
         this.iconColor = iconColor;
     }
 
@@ -55,6 +57,14 @@ public class Plan {
 
     public void setIconColor(String iconColor) {
         this.iconColor = iconColor;
+    }
+
+    public String getIconFront() {
+        return iconFront;
+    }
+
+    public void setIconFront(String frontIcon) {
+        this.iconFront = frontIcon;
     }
 
 

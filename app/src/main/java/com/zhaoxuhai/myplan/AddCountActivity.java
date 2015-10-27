@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.Calendar;
 
 
@@ -31,10 +33,18 @@ public class AddCountActivity extends Activity implements View.OnClickListener {
     private SeekBar currCountBar = null;
     private TextView currCountShow = null;
 
+    private TextView totalCountShow = null;
+    private TextView maxCountShow = null;
+    private TextView aveCountShow = null;
+
     private String planName = "";
     private String planUnit = "";
     private int planId;
-    private int version = 1;
+    private int version = 2;
+
+    private int totalCount = 0;
+    private float averageCount = 0.0f;
+    private int maxCount = 0;
 
     private MyDatabaseHelper dbHelper;
 
@@ -50,6 +60,8 @@ public class AddCountActivity extends Activity implements View.OnClickListener {
         planUnit = intent.getStringExtra("planUnit");
         planId = intent.getIntExtra("planId", 0);
 
+
+
         add1Btn = (Button) findViewById(R.id.add1);
         minus1Btn = (Button) findViewById(R.id.minus1);
         add10Btn = (Button) findViewById(R.id.add10);
@@ -61,6 +73,11 @@ public class AddCountActivity extends Activity implements View.OnClickListener {
         currCountShow = (TextView) findViewById(R.id.curr_count_show);
         planNameTxt = (TextView) findViewById(R.id.plan_name);
         planNameTxt.setText(planName);
+
+        totalCountShow = (TextView) findViewById(R.id.total_count);
+        maxCountShow = (TextView) findViewById(R.id.max_count);
+        aveCountShow = (TextView) findViewById(R.id.average_count);
+
         dbHelper = new MyDatabaseHelper(this, "MyPlan.db", null, version);
 
         add1Btn.setOnClickListener(this);
@@ -70,6 +87,13 @@ public class AddCountActivity extends Activity implements View.OnClickListener {
         add50Btn.setOnClickListener(this);
         minus50Btn.setOnClickListener(this);
         okBtn.setOnClickListener(this);
+        getStatisticInfo();
+
+        totalCountShow.setText("总数:"+totalCount);
+        maxCountShow.setText("最大值:"+maxCount);
+        aveCountShow.setText("平均值:"+averageCount);
+
+
 
         currCountBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -172,5 +196,22 @@ public class AddCountActivity extends Activity implements View.OnClickListener {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void getStatisticInfo() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select num from Record where planId="+planId, null);
+        int tmp_num = 0;
+        int count = 0;
+        while (cursor.moveToNext()) {
+            tmp_num = cursor.getInt(cursor.getColumnIndex("num"));
+            totalCount += tmp_num;
+            if(tmp_num > maxCount) {
+                maxCount = tmp_num;
+            }
+            count++;
+        }
+        cursor.close();
+        averageCount = (float)(Math.round(totalCount/count*10))/10;
     }
 }

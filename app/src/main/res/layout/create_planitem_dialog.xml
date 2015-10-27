@@ -34,13 +34,13 @@
         android:text="保存"
         android:layout_below="@id/planUnit" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/delete_btn"
-        android:layout_toRightOf="@id/save_btn"
-        android:layout_below="@id/planUnit"
-        android:text="删除" />
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/delete_btn"-->
+        <!--android:layout_toRightOf="@id/save_btn"-->
+        <!--android:layout_below="@id/planUnit"-->
+        <!--android:text="删除" />-->
 
     <Button
         android:layout_width="wrap_content"
